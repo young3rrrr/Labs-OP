@@ -1,4 +1,4 @@
-function* fibonacciGenerator(){
+ export function* fibonacciGenerator(){
     let curr = 0, next = 1;
     while (true) {
         yield curr;

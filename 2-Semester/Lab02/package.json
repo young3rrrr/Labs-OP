@@ -1,0 +1,10 @@
+{
+  "name": "lab02",
+  "version": "1.0.0",
+  "type": "module",
+  "author": "Olexii",
+  "main": "FibFuncs.js",
+  "scripts": {
+    "start": "node FibFuncs.js"
+  }
+}
