@@ -1,4 +1,4 @@
-import { fibonacciGenerator, asyncFibonacciGenerator } from '../lab01/src/index.js';
+import { fibonacciGenerator, asyncFibonacciGenerator } from 'lab01';
 
 const fibGen = fibonacciGenerator();
 const asyncFibGen = asyncFibonacciGenerator(10, 500);

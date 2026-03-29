@@ -6,5 +6,8 @@
   "main": "FibFuncs.js",
   "scripts": {
     "start": "node FibFuncs.js"
+  },
+  "dependencies": {
+    "lab01": "file:../lab01"
   }
 }
