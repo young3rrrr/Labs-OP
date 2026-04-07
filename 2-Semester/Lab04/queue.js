@@ -1,4 +1,4 @@
-export { BiDirectionalPriorityQueue, Mode };
+
 
 
 const Mode = {
@@ -110,3 +110,6 @@ peek(mode) {
 
 }
 }
+
+
+export { BiDirectionalPriorityQueue, Mode };
