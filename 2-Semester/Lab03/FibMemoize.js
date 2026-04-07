@@ -1,5 +1,5 @@
 import { memoize } from "./memoize.js";
-import { fibonacciGenerator, asyncFibonacciGenerator } from "../lab01/src/index.js";
+import { fibonacciGenerator, asyncFibonacciGenerator } from "../Lab01/src/index.js";
 
 const fibGen = fibonacciGenerator();
 const asyncFibGen = asyncFibonacciGenerator(10, 500);

@@ -8,6 +8,6 @@
     "start": "node FibFuncs.js"
   },
   "dependencies": {
-    "lab01": "file:../lab01"
+    "lab01": "file:../Lab01"
   }
 }
