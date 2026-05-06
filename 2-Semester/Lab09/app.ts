@@ -1,10 +1,32 @@
 import { performance } from 'perf_hooks';
+import * as fs from 'fs';
+
+interface LogMeta {
+    timestamp: string;
+    level: string;
+    method: string;
+    args: any[];
+    result: any;
+    duration: string;
+}
 
 interface LogOptions {
     level?: 'INFO' | 'DEBUG' | 'ERROR';
+    format?: 'text' | 'json';
+    dest?: 'console' | 'file';
 }
 
-function log({ level = 'INFO' }: LogOptions = {}) {
+const logFormatters: Record<string, (meta: LogMeta) => string> = {
+    text: (meta) => `[${meta.timestamp}] [${meta.level}] ${meta.method}() | Args: ${JSON.stringify(meta.args)} | Result: ${JSON.stringify(meta.result)} | Time: ${meta.duration}ms`,
+    json: (meta) => JSON.stringify(meta)
+};
+
+const logTransports: Record<string, (message: string) => void> = {
+    console: console.log,
+    file: (message) => fs.appendFileSync('app.log', message + '\n')
+};
+
+function log({ level = 'INFO', format = 'text', dest = 'console' }: LogOptions = {}) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         const originalMethod = descriptor.value;
 
@@ -26,10 +48,19 @@ function log({ level = 'INFO' }: LogOptions = {}) {
                     return; 
                 }
 
-                const timestamp = new Date().toISOString();
-                const currentLevel = error ? 'ERROR' : level;
+                const logData: LogMeta = {
+                    timestamp: new Date().toISOString(),
+                    level: error ? 'ERROR' : level,
+                    method: propertyKey,
+                    args,
+                    result: error ? error.message : result,
+                    duration
+                };
+
+                const formatterFn = logFormatters[format] || logFormatters.text;
+                const transportFn = logTransports[dest] || logTransports.console;
                 
-                console.log(`[${timestamp}] [${currentLevel}] ${propertyKey}() | Args: ${JSON.stringify(args)} | Result: ${error ? error.message : JSON.stringify(result)} | Time: ${duration}ms`);
+                transportFn(formatterFn(logData));
             }
             
             return result;
@@ -40,12 +71,18 @@ function log({ level = 'INFO' }: LogOptions = {}) {
 }
 
 class PaymentService {
-    @log({ level: 'INFO' })
+    @log({ level: 'INFO', format: 'text' })
     calculateTax(amount: number) {
         return amount * 0.2;
     }
 
-    @log({ level: 'ERROR' })
+    @log({ level: 'DEBUG', format: 'json' })
+    async processPayment(userId: number, amount: number) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return { status: 'success', transactionId: 98765 };
+    }
+
+    @log({ level: 'ERROR', format: 'text', dest: 'file' })
     async refund(transactionId: number) {
         await new Promise(resolve => setTimeout(resolve, 100));
         throw new Error(`Transaction ${transactionId} not found.`);
@@ -53,11 +90,14 @@ class PaymentService {
 }
 
 async function runDemo() {
-    console.log('--- BASIC TS LOGGER TEST ---\n');
+    console.log('--- EXTENDED TS LOGGER TEST ---\n');
     const service = new PaymentService();
 
     service.calculateTax(100);
+    await service.processPayment(42, 5000);
+    
     try { await service.refund(98765); } catch (e) {}
+    console.log('\n--- Ошибка записана в app.log ---');
 }
 
 runDemo();
