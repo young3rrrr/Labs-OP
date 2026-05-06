@@ -28,3 +28,23 @@ async function* batchStream(iterator, batchSize) {
         yield batch;
     }
 }
+
+async function processBatches() {
+    console.log("Starting batch processing...");
+    const telemetryStream = generateTelemetry();
+    const batchIterator = batchStream(telemetryStream, 5);
+
+    let batchCount = 0;
+
+    for await (const batch of batchIterator) {
+        console.log(`Processing batch ${++batchCount}:`, batch);
+        await delay(200);
+            
+        if (batchCount >= 10) {
+            console.log("Processed 10 batches, stopping...");
+            return;
+        }
+    }
+}
+
+processBatches();
