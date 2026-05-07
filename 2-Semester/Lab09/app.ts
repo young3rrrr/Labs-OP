@@ -88,11 +88,9 @@ class PaymentService {
         throw new Error(`Transaction ${transactionId} not found.`);
     }
 }
-<<<<<<< HEAD
-// npx ts-node app.ts
-=======
 
->>>>>>> 4236a6776bbc1e0140927b6f30fb82f1581b9d77
+// npx ts-node app.ts
+
 async function runDemo() {
     console.log('--- EXTENDED TS LOGGER TEST ---\n');
     const service = new PaymentService();
@@ -101,11 +99,7 @@ async function runDemo() {
     await service.processPayment(42, 5000);
     
     try { await service.refund(98765); } catch (e) {}
-<<<<<<< HEAD
     console.log('\n--- Error log written to app.log ---');
-=======
-    console.log('\n--- Ошибка записана в app.log ---');
->>>>>>> 4236a6776bbc1e0140927b6f30fb82f1581b9d77
 }
 
 runDemo();
